@@ -78,6 +78,8 @@ I'll emphasize the ones I think are under-utilized, or have non-obvious use-case
 - `cast storage <address> <slot>` - read a contract's storage slot
 - `cast resolve-name <ens name>` - lookup address associated with ENS name
 - `cast interface <path or verified contract address>` - generate solidity interface from ABI
+- `cast --to-dec <hex value>` - convert hex value to decimal
+- `cast --to-hex <dec value>` - convert decimal value to hex
   
 # Relevant Fundamentals
 

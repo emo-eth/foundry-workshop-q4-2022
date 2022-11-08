@@ -44,6 +44,7 @@ I'll emphasize the ones I think are under-utilized, or have non-obvious use-case
 ## Forge 
 
 
+- `forge config` - show current values for all configuration variables
 - `forge fmt` - Format your Solidity code (configurably via `foundry.toml` with [these options](https://book.getfoundry.sh/reference/config/formatter))
   - Select `foundry` as the default formatter in VSCode!
 - `forge init` - initialize a new Forge project
@@ -83,11 +84,22 @@ I'll emphasize the ones I think are under-utilized, or have non-obvious use-case
   
 # Relevant Fundamentals
 
-## EVM Fundamentals
-
-## HEVM Fundamentals
 
 ## Foundry Configuration
+
+- `forge config` - show values of all 
+## EVM Fundamentals
+
+### Stack-Too-Deep
+- limitations, considerations
+
+
+### Storage Layout basics
+- how storage works and why it's important for testing
+- `stdStorage`
+
+
+## HEVM Fundamentals
 
 # Scripting with Forge
 

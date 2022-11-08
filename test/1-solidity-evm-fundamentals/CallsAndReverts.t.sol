@@ -32,10 +32,14 @@ contract Helper {
     }
 
     function revertsWithPanic() public returns (bool) {
+        uint256 x = 0;
         called = true;
-        assembly {
-            pop(div(1, 0))
-        }
+        uint256 value = 1 / x;
+        return called;
+    }
+
+    function readRevert() public view returns (bool) {
+        revert();
         return called;
     }
 
@@ -59,11 +63,11 @@ contract CallsAndReverts is Test {
         helper.revertsWithString();
     }
 
-    function testTryCatch1() public {
-        try helper.revertsWithString() returns (bool called) {
-            // won't reach here
-        } catch (bytes memory reason) {
+    function testTryCatch() public {
+        try helper.revertsWithString() returns (bool called) {}
+        catch (bytes memory reason) {
             // bytes4(keccak256("Error(string)")) == 0x08c379a0
+            emit log_named_bytes("Error(string)", reason);
             assertEq(reason, bytes.concat(hex"08c379a0", abi.encode("revert")), "Error(string) bytes incorrect");
         }
 
@@ -73,6 +77,17 @@ contract CallsAndReverts is Test {
             assertEq(reason, "revert", "String reason incorrect");
         }
 
+        try helper.revertsWithPanic() returns (bool called) {}
+        catch (bytes memory reason) {
+            emit log_named_bytes("Panic(uint256)", reason);
+            assertEq(reason, bytes.concat(hex"4e487b71", bytes32(uint256(18))), "Error(string) bytes incorrect");
+        }
+
+        try helper.revertsWithPanic() returns (bool called) {}
+        catch Panic(uint256 panic) {
+            assertEq(panic, 18, "Panic code not correct");
+        }
+
         try helper.revertsWithCustomError() returns (bool called) {}
         catch (bytes memory reason) {
             assertEq(
@@ -80,10 +95,7 @@ contract CallsAndReverts is Test {
             );
         }
 
-        try helper.revertsWithPanic() returns (bool called) {}
-        catch Panic(uint256 panic) {
-            assertEq(panic, 0x11, "Panic code not correct");
-        }
+        assertFalse(helper.called(), "Called should be false");
     }
 
     function testCall() public {
@@ -92,8 +104,14 @@ contract CallsAndReverts is Test {
         assertFalse(success, "Should not have succeeded");
         assertEq(data, abi.encodeWithSelector(Helper.CustomError.selector, "revert"), "Custom error bytes incorrect");
 
+        assertFalse(helper.called(), "Called should be false");
+
         (success, data) = address(helper).call(abi.encodeWithSelector(Helper.doesNotRevert.selector));
         assertTrue(success, "Call should have succeeded");
         assertTrue(abi.decode(data, (bool)), "Call should have returned true");
+
+        (success, data) = address(helper).staticcall(abi.encodeWithSelector(Helper.readRevert.selector));
+        assertFalse(success, "Should not have succeeded");
+        assertEq(data, "", "Should have returned empty bytes");
     }
 }

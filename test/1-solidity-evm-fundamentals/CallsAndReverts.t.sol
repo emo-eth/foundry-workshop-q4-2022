@@ -114,4 +114,10 @@ contract CallsAndReverts is Test {
         assertFalse(success, "Should not have succeeded");
         assertEq(data, "", "Should have returned empty bytes");
     }
+
+    function testCallWithExpectRevert() public {
+        vm.expectRevert();
+        (bool success,) = address(helper).call(abi.encodeWithSelector(Helper.revertsWithCustomError.selector));
+        assertTrue(success, "Success should be true here");
+    }
 }

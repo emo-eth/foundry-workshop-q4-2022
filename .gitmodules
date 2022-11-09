@@ -7,3 +7,9 @@
 [submodule "lib/solmate"]
 	path = lib/solmate
 	url = https://github.com/transmissions11/solmate
+[submodule "lib/bash-utils"]
+	path = lib/bash-utils
+	url = https://github.com/odyslam/bash-utils
+[submodule "lib/chainlink"]
+	path = lib/chainlink
+	url = https://github.com/smartcontractkit/chainlink

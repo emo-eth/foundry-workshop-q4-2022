@@ -3,8 +3,16 @@ src = 'src'
 out = 'out'
 libs = ['lib']
 etherscan_api_key = '${ETHERSCAN_API_KEY}'
+fs_permissions = [{access='read-write', path='.'}]
+
 
 [rpc_endpoints]
 mainnet = '${ETHEREUM_RPC_URL}'
+
+[profile.local.invairant]
+fail_on_revert = true
+
+[profile.local.fuzz]
+runs = 4096
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

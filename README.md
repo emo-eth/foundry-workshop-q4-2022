@@ -1,4 +1,5 @@
 # Foundry: Beyond Fuzzing
+(Very much a work in progress)
 
 Foundry is a suite of (currently) three tools: Forge, Cast, and Anvil. 
 
@@ -24,7 +25,7 @@ If I run into something that doesn't work as expected or is undocumented, I'll u
 
 The [Pull Requests page](https://github.com/foundry-rs/foundry/pulls) is also a great source of information.
 
-If those fail, I'll sometimes dig into the source code. As of writing, Invariant testing is not documented, but digging through the source you can find how to configure them in [the relevant code](https://github.com/foundry-rs/foundry/blob/9d64f1fbc47d20f30c91e71c4560fd5b11d65a21/evm/src/fuzz/invariant/executor.rs).
+If those fail, I'll sometimes dig into the source code. As of writing, Invariant testing is not documented, but digging through the source you can find how to configure them in [the relevant code](https://github.com/foundry-rs/foundry/blob/master/evm/src/fuzz/invariant/executor.rs).
 
 It also helps to know Foundry's history: Foundry was inspired by [Dapptools](https://github.com/dapphub/dapptools), and while Foundry has a good number of features Dapptools never had, certain features are still catching up to Dapptools' capabilities, like [invariant testing](https://github.com/dapphub/dapptools/tree/master/src/dapp#invariant-testing) (in a "preview" stage) and [symbolic execution](https://github.com/dapphub/dapptools/tree/master/src/dapp#symbolically-executed-tests) (on the roadmap, but has not been started).
 
@@ -76,6 +77,7 @@ I'll emphasize the ones I think are under-utilized, or have non-obvious use-case
 - `cast etherscan-source <address>` - pull the source code for a verified contract from Etherscan
 - `cast run <tx hash>` - run a published transaction
   - `cast run <tx hash> --debug` - run a published transaction in debug mode
+  - Try it with this phishing tx hash: `0x63f665d2ee14fda67a2a65d132ba013e0dbffdc192a4ad2bfaf9527edcce6fa6`
 - `cast storage <address> <slot>` - read a contract's storage slot
 - `cast resolve-name <ens name>` - lookup address associated with ENS name
 - `cast interface <path or verified contract address>` - generate solidity interface from ABI
@@ -85,22 +87,37 @@ I'll emphasize the ones I think are under-utilized, or have non-obvious use-case
 # Relevant Fundamentals
 
 
-## Foundry Configuration
+### EVM Fundamentals
+- **Solidity is not the EVM**
+- Storage layout
+- Memory layout
+- Calls and reverts
 
-- `forge config` - show values of all 
-## EVM Fundamentals
-
-### Stack-Too-Deep
-- limitations, considerations
-
-
-### Storage Layout basics
-- how storage works and why it's important for testing
-- `stdStorage`
+### HEVM Fundamentals
+- What is HEVM?
+- Cheatcodes
+- Assertions
 
 
-## HEVM Fundamentals
+### Foundry Configuration
+- `forge config` - show values of current values for all config variables
+- overlap with `vm.config`
 
 # Scripting with Forge
+- Reading and writing data from chain
+  - `forge script script/WritingData.s.sol --fork-url $ETH_RPC_URL -vvvv`
+- Simulating transactions
+- Deploying Contracts
+- Deploying with SafeCreate2
+- Scripting with assertions
+  - `forge script script/WithArguments.s.sol --sig "run(uint256,address)" 100 $(cast resolve-name emo.eth) -vvv`
 
 # Advanced Testing Techniques
+
+- Fork testing
+- Mocking calls and contracts
+- `ffi`
+- [stdStorage](https://github.com/foundry-rs/forge-std/blob/master/src/StdStorage.sol)
+- [Invariant Testing](https://github.com/maple-labs/revenue-distribution-token/tree/add-forge-invariants/contracts/test)
+- [Differential Testing](https://github.com/ProjectOpenSea/seaport/blob/main/test/foundry/utils/DifferentialTest.sol)
+- [Wrangling multiple solidity versions and profile configs](https://github.com/ProjectOpenSea/seaport/blob/main/foundry.toml)
